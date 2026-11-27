@@ -1,14 +1,95 @@
+# ==============================================================================
+# AI Agent Instructions, Skills & Coding Rules
+# ==============================================================================
+agent.md
+AGENT.md
+agents.md
+AGENTS.md
+CLAUDE.md
+claude.md
+GEMINI.md
+gemini.md
+COPILOT.md
+.github/copilot-instructions.md
+skills/
+.skills/
+**/skills/
+.agents/
+.agent/
+.claude/
+.gemini/
+.cursor/
+.cursorrules
+.cursorignore
+.windsurf/
+.windsurfrules
+.clinerules
+.roo/
+.roorules
+.aider*
+.ai/
+ai-rules/
+coding-rules/
+.rules/
+*.rules.md
+
+# ==============================================================================
+# Environment & Local Settings (Pengaturan Lokal)
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+local.settings.json
+settings.local.json
+config.local.*
+
+# ==============================================================================
 # Dependencies
+# ==============================================================================
 node_modules/
 */node_modules/
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnpm-store/
+jspm_packages/
+vendor/
 
-# Production Build Output
+# ==============================================================================
+# Build Artifacts & Compiled Files
+# ==============================================================================
 dist/
-build/
 */dist/
+dist-ssr/
+build/
 */build/
+out/
+.next/
+.nuxt/
+.vite/
+coverage/
+*.tsbuildinfo
+*.min.js
+*.min.css
+*.map
+__pycache__/
+*.py[cod]
+*.o
+*.so
+*.dll
+*.exe
+*.class
+*.jar
 
-# Logs
+# ==============================================================================
+# Logs & Temporary Files
+# ==============================================================================
+logs/
 logs
 *.log
 npm-debug.log*
@@ -16,29 +97,38 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+tmp/
+temp/
+scratch/
+*.tmp
+*.temp
+*.bak
+*.orig
 
-# Environment & Local Configuration
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-*.local
-
-# Editor & System Files
+# ==============================================================================
+# IDE, Editor Configuration & Editor Cache
+# ==============================================================================
 .vscode/
 .idea/
+.fleet/
+.zed/
+.sublime-*
+*.code-workspace
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+*.swp
+*.swo
 *.sw?
+*~
+.cache/
+*/.cache/
+.eslintcache
+.stylelintcache
+.prettiercache
+.parcel-cache/
+.turbo/
 .DS_Store
 Thumbs.db
-
-# Temporary & Scratch Files
-tmp/
-temp/
-scratch/
-.agents/
-.cache/
+desktop.ini
