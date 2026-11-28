@@ -1,0 +1,171 @@
+{
+  "endpoint": "POST /api/v1/penyesuaian-stok",
+  "akses": "admin | karyawan",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Penyesuaian stok berhasil (20 -> 15) dengan layanan prediksi stub aktif",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 1,
+          "jumlah_sesudah": 15,
+          "alasan": "Kemasan bocor saat cek fisik"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Stok berhasil disesuaikan",
+        "data": {
+          "batch_id": 1,
+          "jumlah_sebelum": 20,
+          "jumlah_sesudah": 15,
+          "selisih": -5,
+          "alasan": "Kemasan bocor saat cek fisik",
+          "skor_risiko_baru": 0.85,
+          "status_risiko": "tinggi",
+          "waktu_penyesuaian": "2026-11-28T12:57:17.036Z"
+        }
+      }
+    },
+    {
+      "skenario": "Penyesuaian stok berhasil (3 -> 2) saat layanan prediksi mati (fallback belum_tersedia, TC-RSK-002)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 4,
+          "jumlah_sesudah": 2,
+          "alasan": "Cek fisik saat layanan prediksi mati"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Stok berhasil disesuaikan",
+        "data": {
+          "batch_id": 4,
+          "jumlah_sebelum": 3,
+          "jumlah_sesudah": 2,
+          "selisih": -1,
+          "alasan": "Cek fisik saat layanan prediksi mati",
+          "skor_risiko_baru": null,
+          "status_risiko": "belum_tersedia",
+          "waktu_penyesuaian": "2026-11-28T12:57:17.040Z"
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Field jumlah_sesudah tidak diisi (400)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 1
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "jumlah_sesudah",
+            "pesan": "Kolom ini wajib diisi"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Batch tidak ditemukan (404)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 999,
+          "jumlah_sesudah": 5
+        }
+      },
+      "status": 404,
+      "body": {
+        "sukses": false,
+        "pesan": "Batch tidak ditemukan",
+        "error_kode": "ERR_TIDAK_DITEMUKAN"
+      }
+    },
+    {
+      "skenario": "Jumlah sesudah negatif (422 ERR_INVALID_STOCK_VALUE, TC-STK-002)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 1,
+          "jumlah_sesudah": -5
+        }
+      },
+      "status": 422,
+      "body": {
+        "sukses": false,
+        "pesan": "Jumlah stok fisik sesudah penyesuaian tidak boleh kurang dari 0",
+        "error_kode": "ERR_INVALID_STOCK_VALUE"
+      }
+    },
+    {
+      "skenario": "Batch sudah diretur / nonaktif ditolak (422 ERR_BATCH_TIDAK_AKTIF, [A-14])",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "batch_id": 5,
+          "jumlah_sesudah": 1
+        }
+      },
+      "status": 422,
+      "body": {
+        "sukses": false,
+        "pesan": "Batch berstatus sudah_diretur tidak bisa disesuaikan",
+        "error_kode": "ERR_BATCH_TIDAK_AKTIF"
+      }
+    },
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/penyesuaian-stok",
+        "body": {
+          "batch_id": 1,
+          "jumlah_sesudah": 15
+        }
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

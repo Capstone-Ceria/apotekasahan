@@ -1,0 +1,207 @@
+{
+  "endpoint": "GET /api/v1/batches",
+  "akses": "admin | karyawan",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Daftar batch aktif dengan paginasi (page=1, limit=2) dan agregasi total seluruh hasil filter",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches?page=1&limit=2",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Daftar batch berhasil diambil",
+        "data": [
+          {
+            "id": 3,
+            "nomor_batch": "P-KONS",
+            "obat": {
+              "id": 2,
+              "kode_obat": "OBT-002",
+              "nama_obat": "Paracetamol Sirup",
+              "kategori": "Analgesik",
+              "satuan": "botol",
+              "stok_minimum": 5
+            },
+            "distributor": {
+              "id": 3,
+              "kode": "DST-003",
+              "nama": "PBF Konsinyasi",
+              "telepon": null,
+              "aturan_retur_bulan": 0
+            },
+            "tanggal_masuk": "2025-12-01",
+            "tanggal_kedaluwarsa": "2026-11-20",
+            "batas_retur": null,
+            "jumlah_awal": 10,
+            "jumlah_saat_ini": 8,
+            "harga_beli_satuan": 18500,
+            "nilai_total": 148000,
+            "skor_risiko": null,
+            "status_risiko": "belum_tersedia",
+            "status_risiko_tampil": "belum_tersedia",
+            "status_retur": "tidak_bisa_diretur",
+            "sisa_hari_retur": null,
+            "sisa_hari_exp": 20,
+            "sudah_kedaluwarsa": false,
+            "aktif": true,
+            "keterangan": null
+          },
+          {
+            "id": 1,
+            "nomor_batch": "A-MENDESAK",
+            "obat": {
+              "id": 1,
+              "kode_obat": "OBT-001",
+              "nama_obat": "Amoxicillin 500mg",
+              "kategori": "Antibiotik",
+              "satuan": "strip",
+              "stok_minimum": 10
+            },
+            "distributor": {
+              "id": 2,
+              "kode": "DST-002",
+              "nama": "PBF Dua",
+              "telepon": null,
+              "aturan_retur_bulan": 3
+            },
+            "tanggal_masuk": "2025-12-01",
+            "tanggal_kedaluwarsa": "2027-02-15",
+            "batas_retur": "2026-11-15",
+            "jumlah_awal": 40,
+            "jumlah_saat_ini": 20,
+            "harga_beli_satuan": 1500.1,
+            "nilai_total": 30002,
+            "skor_risiko": null,
+            "status_risiko": "belum_tersedia",
+            "status_risiko_tampil": "belum_tersedia",
+            "status_retur": "bisa_diretur",
+            "sisa_hari_retur": 15,
+            "sisa_hari_exp": 107,
+            "sudah_kedaluwarsa": false,
+            "aktif": true,
+            "keterangan": null
+          }
+        ],
+        "meta": {
+          "halaman": 1,
+          "limit": 2,
+          "total_data": 5,
+          "total_halaman": 3,
+          "tanggal_acuan": "2026-10-31",
+          "agregasi": {
+            "total_batch": 5,
+            "total_unit": 93,
+            "total_nilai": 257507
+          }
+        }
+      }
+    },
+    {
+      "skenario": "Filter distributor_id=1 & status_risiko=sedang (batch 2 lewat batas: status_risiko asli tinggi, status_risiko_tampil sedang)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches?distributor_id=1&status_risiko=sedang",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Daftar batch berhasil diambil",
+        "data": [
+          {
+            "id": 2,
+            "nomor_batch": "A-LEWAT",
+            "obat": {
+              "id": 1,
+              "kode_obat": "OBT-001",
+              "nama_obat": "Amoxicillin 500mg",
+              "kategori": "Antibiotik",
+              "satuan": "strip",
+              "stok_minimum": 10
+            },
+            "distributor": {
+              "id": 1,
+              "kode": "DST-001",
+              "nama": "PBF Satu",
+              "telepon": "0811",
+              "aturan_retur_bulan": 6
+            },
+            "tanggal_masuk": "2025-12-01",
+            "tanggal_kedaluwarsa": "2027-02-20",
+            "batas_retur": "2026-08-20",
+            "jumlah_awal": 30,
+            "jumlah_saat_ini": 12,
+            "harga_beli_satuan": 2000,
+            "nilai_total": 24000,
+            "skor_risiko": 0.9,
+            "status_risiko": "tinggi",
+            "status_risiko_tampil": "sedang",
+            "status_retur": "lewat_batas",
+            "sisa_hari_retur": -72,
+            "sisa_hari_exp": 112,
+            "sudah_kedaluwarsa": false,
+            "aktif": true,
+            "keterangan": null
+          }
+        ],
+        "meta": {
+          "halaman": 1,
+          "limit": 20,
+          "total_data": 1,
+          "total_halaman": 1,
+          "tanggal_acuan": "2026-10-31",
+          "agregasi": {
+            "total_batch": 1,
+            "total_unit": 12,
+            "total_nilai": 24000
+          }
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Filter status_risiko di luar daftar valid (400)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches?status_risiko=parah",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "status_risiko",
+            "pesan": "status_risiko must be one of [rendah, sedang, tinggi, belum_tersedia]"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

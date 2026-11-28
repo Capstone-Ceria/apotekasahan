@@ -1,0 +1,91 @@
+{
+  "endpoint": "GET /api/v1/pengaturan/aturan-retur",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Daftar aturan retur seluruh distributor (termasuk D4 yang memakai default 6 bulan)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan/aturan-retur",
+        "headers": {
+          "X-Peran": "admin"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Aturan retur per distributor berhasil dimuat",
+        "data": [
+          {
+            "distributor_id": 1,
+            "kode_distributor": "DST-001",
+            "nama_distributor": "PBF Satu",
+            "bulan_sebelum_kedaluwarsa": 6,
+            "keterangan": null,
+            "bulan_efektif": 6,
+            "memakai_default": false
+          },
+          {
+            "distributor_id": 2,
+            "kode_distributor": "DST-002",
+            "nama_distributor": "PBF Dua",
+            "bulan_sebelum_kedaluwarsa": 3,
+            "keterangan": null,
+            "bulan_efektif": 3,
+            "memakai_default": false
+          },
+          {
+            "distributor_id": 3,
+            "kode_distributor": "DST-003",
+            "nama_distributor": "PBF Konsinyasi",
+            "bulan_sebelum_kedaluwarsa": 0,
+            "keterangan": null,
+            "bulan_efektif": 0,
+            "memakai_default": false
+          },
+          {
+            "distributor_id": 4,
+            "kode_distributor": "DST-004",
+            "nama_distributor": "PBF Tanpa Aturan",
+            "bulan_sebelum_kedaluwarsa": null,
+            "keterangan": null,
+            "bulan_efektif": 6,
+            "memakai_default": true
+          }
+        ]
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan/aturan-retur"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "skenario": "Karyawan mengakses daftar aturan retur (403)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan/aturan-retur",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    }
+  ]
+}

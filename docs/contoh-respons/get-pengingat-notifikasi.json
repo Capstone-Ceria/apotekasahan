@@ -1,0 +1,72 @@
+{
+  "endpoint": "GET /api/v1/pengingat/notifikasi",
+  "akses": "admin | karyawan",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Daftar notifikasi lonceng header (maks 1 per batch, prioritas lewat_batas > wajib_retur > stok_tipis)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengingat/notifikasi",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Notifikasi berhasil diambil",
+        "data": [
+          {
+            "nama_obat": "Amoxicillin 500mg",
+            "nomor_batch": "A-LEWAT",
+            "batch_id": 2,
+            "targetPage": "pengingat",
+            "id": "exp-ret-2",
+            "type": "lewat_batas",
+            "tone": "rose",
+            "title": "Batas Retur Terlewat",
+            "detail": "PBF Satu • Batas 2026-08-20"
+          },
+          {
+            "nama_obat": "Amoxicillin 500mg",
+            "nomor_batch": "A-MENDESAK",
+            "batch_id": 1,
+            "targetPage": "pengingat",
+            "id": "warn-ret-1",
+            "type": "wajib_retur",
+            "tone": "amber",
+            "title": "Retur Sisa 15 Hari",
+            "detail": "PBF Dua • 20 unit"
+          },
+          {
+            "nama_obat": "Paracetamol Sirup",
+            "nomor_batch": "P-TIPIS",
+            "batch_id": 4,
+            "targetPage": "pengingat",
+            "id": "low-4",
+            "type": "stok_tipis",
+            "tone": "teal",
+            "title": "Stok Tipis (3 unit)",
+            "detail": "PBF Satu"
+          }
+        ]
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengingat/notifikasi"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

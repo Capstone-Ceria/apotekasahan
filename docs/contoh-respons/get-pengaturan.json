@@ -1,0 +1,59 @@
+{
+  "endpoint": "GET /api/v1/pengaturan",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Admin memuat pengaturan sistem aktif",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "admin"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Pengaturan sistem berhasil dimuat",
+        "data": {
+          "tanggal_acuan": "2026-10-31",
+          "stok_minimum_default": 10,
+          "batas_kedaluwarsa_warning_hari": 90,
+          "batas_retur_warning_hari": 30
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "skenario": "Karyawan mengakses endpoint khusus admin (403)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    }
+  ]
+}

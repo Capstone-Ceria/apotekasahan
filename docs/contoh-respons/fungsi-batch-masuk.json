@@ -1,0 +1,146 @@
+{
+  "fungsi": "bisnis.batchMasuk.siapkan & bisnis.batchMasuk.setelahTersimpan",
+  "endpoint_terkait": "Titik sambung POST /api/v1/faktur/simpan-batch (belum dipasang di router bisnis, [A-21])",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "siapkan(): validasi + hitung batas_retur (3 bln -> 2027-03-01), status_retur, dan nilai_total sebelum INSERT",
+      "input": {
+        "distributor_id": 2,
+        "tanggal_masuk": "2026-10-18",
+        "items": [
+          {
+            "obat_id": 1,
+            "nomor_batch": "BMX2610A",
+            "tanggal_kedaluwarsa": "2027-06-01",
+            "jumlah": 50,
+            "harga_beli_satuan": 42000
+          }
+        ]
+      },
+      "output": {
+        "baris": [
+          {
+            "obat_id": 1,
+            "nomor_batch": "BMX2610A",
+            "tanggal_kedaluwarsa": "2027-06-01",
+            "jumlah": 50,
+            "harga_beli_satuan": 42000,
+            "distributor_id": 2,
+            "tanggal_masuk": "2026-10-18",
+            "jumlah_awal": 50,
+            "jumlah_saat_ini": 50,
+            "nilai_total": 2100000,
+            "batas_retur": "2027-03-01",
+            "status_retur": "bisa_diretur",
+            "skor_risiko": null,
+            "status_risiko": "belum_tersedia",
+            "keterangan": "Skor belum tersedia"
+          }
+        ],
+        "aturan_retur_bulan": 3,
+        "tanggal_acuan": "2026-10-31"
+      }
+    },
+    {
+      "skenario": "setelahTersimpan([6]): hitung skor risiko setelah COMMIT memakai prediksi stub",
+      "input": {
+        "batchIds": [
+          6
+        ]
+      },
+      "output": [
+        {
+          "id": 6,
+          "skor_risiko": 0.25,
+          "status_risiko": "rendah",
+          "keterangan": null,
+          "sumber": "stub"
+        }
+      ]
+    },
+    {
+      "skenario": "setelahTersimpan([6]): fallback aman saat layanan prediksi mati (tidak melempar error)",
+      "input": {
+        "batchIds": [
+          6
+        ],
+        "mode_prediksi": "mati"
+      },
+      "output": [
+        {
+          "id": 6,
+          "skor_risiko": null,
+          "status_risiko": "belum_tersedia",
+          "keterangan": "Skor belum tersedia",
+          "sumber": "fallback"
+        }
+      ]
+    }
+  ],
+  "error": [
+    {
+      "skenario": "siapkan(): daftar items kosong (400 ERR_VALIDASI)",
+      "input": {
+        "distributor_id": 1,
+        "tanggal_masuk": "2026-10-18",
+        "items": []
+      },
+      "error": {
+        "nama": "GalatBisnis",
+        "status": 400,
+        "kode": "ERR_VALIDASI",
+        "pesan": "Daftar item kosong",
+        "detail": [
+          {
+            "field": "items",
+            "pesan": "Minimal satu item"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "siapkan(): tanggal_kedaluwarsa lampau (TC-INP-007), nomor_batch kosong, jumlah 0, harga negatif (400 ERR_VALIDASI)",
+      "input": {
+        "distributor_id": 1,
+        "tanggal_masuk": "2026-10-18",
+        "items": [
+          {
+            "nomor_batch": "",
+            "tanggal_kedaluwarsa": "2023-01-01",
+            "jumlah": 0,
+            "harga_beli_satuan": -1
+          }
+        ]
+      },
+      "error": {
+        "nama": "GalatBisnis",
+        "status": 400,
+        "kode": "ERR_VALIDASI",
+        "pesan": "Validasi input gagal",
+        "detail": [
+          {
+            "field": "items[0].nomor_batch",
+            "pesan": "Kolom ini wajib diisi"
+          },
+          {
+            "field": "items[0].tanggal_kedaluwarsa",
+            "pesan": "Tanggal kedaluwarsa tidak boleh lebih lampau dari tanggal saat ini"
+          },
+          {
+            "field": "items[0].tanggal_kedaluwarsa",
+            "pesan": "Tanggal kedaluwarsa tidak boleh lebih lampau dari tanggal masuk"
+          },
+          {
+            "field": "items[0].jumlah",
+            "pesan": "Jumlah harus bilangan bulat lebih dari 0"
+          },
+          {
+            "field": "items[0].harga_beli_satuan",
+            "pesan": "Harga beli tidak boleh negatif"
+          }
+        ]
+      }
+    }
+  ]
+}
