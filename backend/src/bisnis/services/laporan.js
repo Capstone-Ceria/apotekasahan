@@ -3,6 +3,7 @@
 const { galat } = require('../lib/galat');
 const inventori = require('../domain/inventori');
 const pengingat = require('../domain/pengingat');
+const tenggat = require('../domain/tenggat');
 
 /**
  * Pengingat, tabel inventori, detail batch, dan dashboard.
@@ -52,7 +53,12 @@ function buatLayananLaporan(ctx) {
     return inventori.ringkasanDashboard(batches, hasilPengingat, pengaturan, konfigurasi);
   }
 
-  return { daftarPengingat, notifikasi, tabelInventori, detailBatch, ringkasanDashboard };
+  async function daftarTenggat(opsi = {}) {
+    const { pengaturan, batches } = await muatBatch();
+    return tenggat.daftarTenggatPerTanggal(batches, opsi, pengaturan, konfigurasi);
+  }
+
+  return { daftarPengingat, notifikasi, tabelInventori, detailBatch, ringkasanDashboard, daftarTenggat };
 }
 
 module.exports = { buatLayananLaporan };
