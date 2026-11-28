@@ -1,0 +1,115 @@
+{
+  "endpoint": "POST /api/v1/risiko/hitung-ulang",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Hitung ulang default (hanya_belum_tersedia=true -> memproses batch 1, 3, 6)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/risiko/hitung-ulang",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {}
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "3 skor berhasil dihitung, 0 masih belum tersedia",
+        "data": {
+          "diproses": 3,
+          "sukses": 3,
+          "fallback": 0
+        }
+      }
+    },
+    {
+      "skenario": "Hitung ulang paksa untuk batch_ids tertentu ([1, 2], hanya_belum_tersedia=false)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/risiko/hitung-ulang",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "batch_ids": [
+            1,
+            2
+          ],
+          "hanya_belum_tersedia": false
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "2 skor berhasil dihitung, 0 masih belum tersedia",
+        "data": {
+          "diproses": 2,
+          "sukses": 2,
+          "fallback": 0
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "batch_ids berisi nilai bukan integer positif (400)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/risiko/hitung-ulang",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "batch_ids": [
+            "abc"
+          ]
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "batch_ids.0",
+            "pesan": "batch_ids[0] must be a number"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Karyawan mencoba memicu hitung ulang skor (403)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/risiko/hitung-ulang",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {}
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    },
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "POST",
+        "url": "/api/v1/risiko/hitung-ulang",
+        "body": {}
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

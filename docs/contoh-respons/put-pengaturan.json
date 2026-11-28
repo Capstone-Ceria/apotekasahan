@@ -1,0 +1,139 @@
+{
+  "endpoint": "PUT /api/v1/pengaturan",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Ubah tanggal_acuan (ke 2026-12-01) dan stok_minimum_default (ke 12)",
+      "catatan": "Batch 1 (batas retur 2026-11-15) berubah status menjadi lewat_batas dan hitung ulang skor dijadwalkan di latar.",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "tanggal_acuan": "2026-12-01",
+          "stok_minimum_default": 12
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Pengaturan sistem berhasil diperbarui",
+        "data": {
+          "tanggal_acuan": "2026-12-01",
+          "stok_minimum_default": 12,
+          "batas_kedaluwarsa_warning_hari": 90,
+          "batas_retur_warning_hari": 30
+        },
+        "meta": {
+          "batch_status_retur_berubah": 1,
+          "hitung_ulang_skor": {
+            "dijadwalkan": true,
+            "jumlah_batch": 5
+          }
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Payload kosong (400)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {}
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "",
+            "pesan": "Minimal satu pengaturan harus diisi"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Tanggal kalender tidak valid 2026-02-30 (400)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "tanggal_acuan": "2026-02-30"
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "tanggal_acuan",
+            "pesan": "Tanggal tidak valid"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Beberapa field sekaligus tidak valid: stok negatif dan format tanggal salah (400)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "stok_minimum_default": -1,
+          "tanggal_acuan": "31-10-2026"
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "tanggal_acuan",
+            "pesan": "Format tanggal harus YYYY-MM-DD"
+          },
+          {
+            "field": "stok_minimum_default",
+            "pesan": "Tidak boleh kurang dari 0"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Karyawan mencoba mengubah pengaturan (403)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "stok_minimum_default": 12
+        }
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    }
+  ]
+}

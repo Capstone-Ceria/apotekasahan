@@ -1,0 +1,86 @@
+{
+  "endpoint": "GET /api/v1/batches/:id/penyesuaian",
+  "akses": "admin | karyawan",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Riwayat penyesuaian batch 1 (setelah 1 catatan opname dummy)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches/1/penyesuaian",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Riwayat penyesuaian berhasil dimuat",
+        "data": [
+          {
+            "id": 1,
+            "tanggal": "2026-11-28T12:57:17.064Z",
+            "jumlah_sebelum": 20,
+            "jumlah_sesudah": 18,
+            "selisih": -2,
+            "alasan": "Pemeriksaan fisik rak B2",
+            "petugas": "Karyawan"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Batch tanpa riwayat penyesuaian mengembalikan array kosong",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches/2/penyesuaian",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Riwayat penyesuaian berhasil dimuat",
+        "data": []
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Parameter id bukan bilangan bulat positif (400)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches/abc/penyesuaian",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "id",
+            "pesan": "id must be a number"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/batches/1/penyesuaian"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    }
+  ]
+}

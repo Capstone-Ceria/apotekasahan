@@ -1,0 +1,101 @@
+{
+  "endpoint": "PUT /api/v1/pengaturan/aturan-retur/:distributor_id",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Ubah aturan retur distributor 1 dari 6 bulan menjadi 3 bulan",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan/aturan-retur/1",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "bulan_sebelum_kedaluwarsa": 3,
+          "keterangan": "Perjanjian baru per 1 November 2026"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Aturan retur berhasil diperbarui. 2 batch terkait telah dihitung ulang batas returnya.",
+        "data": {
+          "distributor_id": 1,
+          "bulan_sebelum_kedaluwarsa": 3,
+          "total_batch_terdampak": 2,
+          "total_batch_berubah": 2,
+          "hitung_ulang_skor": {
+            "dijadwalkan": true,
+            "jumlah_batch": 2
+          }
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Pilihan bulan tidak diizinkan (2 bulan, di luar [0, 1, 3, 6]) (400)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan/aturan-retur/1",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "bulan_sebelum_kedaluwarsa": 2
+        }
+      },
+      "status": 400,
+      "body": {
+        "sukses": false,
+        "pesan": "Validasi input gagal",
+        "error_kode": "ERR_VALIDASI",
+        "detail": [
+          {
+            "field": "bulan_sebelum_kedaluwarsa",
+            "pesan": "Pilihan yang diizinkan: 0, 1, 3, 6 bulan"
+          }
+        ]
+      }
+    },
+    {
+      "skenario": "Distributor tidak ditemukan (404)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan/aturan-retur/99",
+        "headers": {
+          "X-Peran": "admin"
+        },
+        "body": {
+          "bulan_sebelum_kedaluwarsa": 3
+        }
+      },
+      "status": 404,
+      "body": {
+        "sukses": false,
+        "pesan": "Distributor tidak ditemukan",
+        "error_kode": "ERR_TIDAK_DITEMUKAN"
+      }
+    },
+    {
+      "skenario": "Karyawan mencoba mengubah aturan retur (403)",
+      "request": {
+        "method": "PUT",
+        "url": "/api/v1/pengaturan/aturan-retur/1",
+        "headers": {
+          "X-Peran": "karyawan"
+        },
+        "body": {
+          "bulan_sebelum_kedaluwarsa": 3
+        }
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "endpoint": "GET /api/v1/dashboard/ringkasan",
+  "akses": "admin",
+  "sumber_data_dummy": "backend/test-support/fixture.js (dataAwal, tanggal_acuan 2026-10-31, prediksi stub)",
+  "sukses": [
+    {
+      "skenario": "Ringkasan eksekutif dashboard persediaan dan nilai berisiko",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/dashboard/ringkasan",
+        "headers": {
+          "X-Peran": "admin"
+        }
+      },
+      "status": 200,
+      "body": {
+        "sukses": true,
+        "pesan": "Ringkasan dashboard berhasil dimuat",
+        "data": {
+          "tanggal_acuan": "2026-10-31",
+          "total_nilai_persediaan": 257507,
+          "total_batch_aktif": 5,
+          "jumlah_batch_berisiko_tinggi": 1,
+          "total_nilai_berisiko_hangus": 24000,
+          "persentase_nilai_berisiko": 9.32,
+          "distributor_berisiko_terbanyak": [
+            {
+              "distributor_id": 1,
+              "nama_distributor": "PBF Satu",
+              "aturan_retur_bulan": 6,
+              "jumlah_batch_berisiko": 1,
+              "nilai_berisiko": 24000
+            }
+          ],
+          "tindakan_segera": [
+            {
+              "batch_id": 1,
+              "nama_obat": "Amoxicillin 500mg",
+              "nomor_batch": "A-MENDESAK",
+              "distributor": "PBF Dua",
+              "nilai_stok": 30002,
+              "hari_tersisa_retur": 15,
+              "status": "bisa_diretur"
+            }
+          ],
+          "ringkasan_pengingat": {
+            "bisa_diretur": 3,
+            "mendesak_retur": 1,
+            "lewat_batas_retur": 1,
+            "mendekati_kedaluwarsa": 1,
+            "stok_menipis": 1
+          }
+        }
+      }
+    }
+  ],
+  "error": [
+    {
+      "skenario": "Tanpa sesi login (401)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/dashboard/ringkasan"
+      },
+      "status": 401,
+      "body": {
+        "sukses": false,
+        "pesan": "Sesi tidak valid, silakan login ulang",
+        "error_kode": "AUTH_REQUIRED"
+      }
+    },
+    {
+      "skenario": "Karyawan mengakses dashboard admin (403)",
+      "request": {
+        "method": "GET",
+        "url": "/api/v1/dashboard/ringkasan",
+        "headers": {
+          "X-Peran": "karyawan"
+        }
+      },
+      "status": 403,
+      "body": {
+        "sukses": false,
+        "pesan": "Hanya admin yang boleh mengakses fitur ini",
+        "error_kode": "AUTH_FORBIDDEN"
+      }
+    }
+  ]
+}
